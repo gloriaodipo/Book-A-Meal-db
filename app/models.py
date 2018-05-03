@@ -30,8 +30,6 @@ class User(Base):
     email = db.Column(db.String(120), index=True,nullable=True, unique=True)
     password = db.Column(db.String(128), nullable=True)
 
-    # self.password_hash = Bcrypt().generate_password_hash(password).decode('utf-8')
-
     def password_is_valid(self, password):
         """
         Checks the password against it's hash to validate the user's password
