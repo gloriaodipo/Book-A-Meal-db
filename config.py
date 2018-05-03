@@ -3,7 +3,8 @@ import os
 class Config(object):
     """Parent configuration class."""
     DEBUG = False
-    SQLALCHEMY_DATABASE_URI = "sqlite:///test_db"
+    SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL')
+    SQLALCHEMY_TRACK_MODIFICATIONS = False
 
 class DevelopmentConfig(Config):
     """Configurations for Development."""
@@ -12,7 +13,7 @@ class DevelopmentConfig(Config):
 class TestingConfig(Config):
     """Configurations for Testing, with a separate test database."""
     TESTING = True
-    SQLALCHEMY_DATABASE_URI = 'sqlite:///test_db'
+    SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL_TEST')
     DEBUG = True
 
 class StagingConfig(Config):
