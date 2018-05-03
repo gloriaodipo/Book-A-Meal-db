@@ -1,8 +1,16 @@
-from app import db
+import sys
+import os
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
 from flask_bcrypt import Bcrypt
+
+import app
+
+db = app.db
 
 class Base(db.Model):
     __abstract__ = True
+    __table_args__ = {'extend_existing': True}
     def save(self):
         """Save a meal to the database"""
         db.session.add(self)
@@ -16,10 +24,11 @@ class Base(db.Model):
 class User(Base):
     
     __tablename__ = 'user'
+    __table_args__ = {'extend_existing': True}
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(64), index=True,nullable=True, unique=True)
     email = db.Column(db.String(120), index=True,nullable=True, unique=True)
-    password_hash = db.Column(db.String(128), nullable=True)
+    password = db.Column(db.String(128), nullable=True)
 
     # self.password_hash = Bcrypt().generate_password_hash(password).decode('utf-8')
 

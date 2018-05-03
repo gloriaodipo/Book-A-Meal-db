@@ -2,7 +2,7 @@ from flask import Flask, request, jsonify
 from flask_restful import Api, Resource
 import json
 
-from app.models import User
+from .models import User
 
 app = Flask(__name__)
 api = Api(app)
@@ -22,7 +22,28 @@ class UserSignupAPI(Resource):
         result.status_code = 201
         return result
 
-api.add_resource(UserLoginAPI, '/api/v1/user/signup')
+# class UserLoginAPI(Resource):
+
+#     def post(self):
+#         access = request.get_json()
+#         username = access.get('username')
+#         password = access.get('password')
+#         for user in users:
+#             if username == user.username:
+#                 if password == user.password:
+#                     result = jsonify({"message": "You are successfully logged in"})
+#                     result.status_code = 200
+#                     return result
+#                 else:
+#                     result =jsonify({'message': 'Wrong password.'})
+#                     result.status_code = 401
+#                     return result
+
+#             result = jsonify({"message": "User unavailable"})
+#             result.status_code = 404
+#             return result
+
+api.add_resource(UserSignupAPI, '/api/v1/user/signup')
 
 if __name__ == '__main__':
     app.run(debug=True)
