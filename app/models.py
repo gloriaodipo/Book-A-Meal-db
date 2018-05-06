@@ -111,26 +111,26 @@ class Meal(Base):
         return "<Meal: {}>".format(self.meal_name)
 
  
-class Order(Base):
+# class Order(Base):
 
-    __tablename__ = 'order'
+#     __tablename__ = 'order'
 
-    id = db.Column(db.Integer, primary_key=True)
-    customer_name = db.Column(db.String, nullable=False)
-    meals = db.Column(db.String, nullable=False)
-    price = db.Column(db.Float, nullable=False)
+#     id = db.Column(db.Integer, primary_key=True)
+#     customer_name = db.Column(db.String, nullable=False)
+#     meals = db.Column(db.String, nullable=False)
+#     price = db.Column(db.Float, nullable=False)
 
-    @staticmethod
-    def get(**kwargs):
-        """This method gets all the orders for a given user."""
-        return Order.query.filter_by(**kwargs).first()
+#     @staticmethod
+#     def get(**kwargs):
+#         """This method gets all the orders for a given user."""
+#         return Order.query.filter_by(**kwargs).first()
 
-    @staticmethod
-    def get_all():
-        """This method gets all the orders for a given user."""
-        return Order.query.all()
+#     @staticmethod
+#     def get_all():
+#         """This method gets all the orders for a given user."""
+#         return Order.query.all()
 
-    def __repr__(self):
-        """Return a representation of an order instance."""
-        return '<Menu Date {}>'.format(self.date.ctime())
+#     def __repr__(self):
+#         """Return a representation of an order instance."""
+#         return '<Menu Date {}>'.format(self.date.ctime())
 

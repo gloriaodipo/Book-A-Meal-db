@@ -15,6 +15,13 @@ class UserSignupAPI(Resource):
         email = user.get('email', None)
         password = user.get('password', None)
 
+        users = user.query.all()
+        for user in users:
+            if user.username == user.username:
+                result = jsonify({'message': 'User already exists'}) 
+                result.status_code = 202
+                return result
+
         if username is None or len(username)==0  or email is None or len(email)==0 or password is None or len(password)==0:
             result = jsonify({'message': 'All fields required'}) 
             result.status_code = 400
@@ -35,6 +42,11 @@ class UserLoginAPI(Resource):
         username = user.get('username')
         password = user.get('password')
         user = User.get(username=username)
+
+        if username is None or len(username)==0 or password is None or len(password)==0:
+            result = jsonify({'message': 'All fields required'}) 
+            result.status_code = 400
+            return result
         if user == None:
             return {'message':'Unavailable, please sign up first'}, 404
         if user.password_is_valid(password):
@@ -93,43 +105,43 @@ class MealsAPI(Resource):
         result.status_code = 200
         return result
 
-class MenuAPI(Resource):
-    @admin_token_required
-    def post(self, user):
-        post_data = request.get_json()
-        meal_items = post_data.get('meal_items', '')
-        date = post_data.get('date', '')
-        if date:
+# class MenuAPI(Resource):
+#     @admin_token_required
+#     def post(self, user):
+#         post_data = request.get_json()
+#         meal_items = post_data.get('meal_items', '')
+#         date = post_data.get('date', '')
+#         if date:
             
-            try:
-                year, month, day = date.split('-')
-                date = datetime(year=int(year), month=int(month), day=int(day))
-            except:
-                return 'Ensure date is of the form YYYY-MM-DD', 400
+#             try:
+#                 year, month, day = date.split('-')
+#                 date = datetime(year=int(year), month=int(month), day=int(day))
+#             except:
+#                 return 'Ensure date is of the form YYYY-MM-DD', 400
 
-        # create a menu object
-        menu = Menu(date=date)
-        # looping through meal items and adding them to menu
-        if meal_items:
-            for meal_id in meal_items:
-                meal = Meal.get(id=meal_id)
-                if not meal:
-                    return 'Meal {} not found'.format(meal_id), 400
-                menu.add_to_menu(meal)
-            menu.save()
-            meal_list = [[meal.id, meal.name, meal.price] for meal in menu.meals]
-            result = jsonify({'id': menu.id, 'date': menu.date, 'meal': meal_list})
-            result.status_code = 201
-            return result
-        return 'Meal list is empty!', 400
+#         # create a menu object
+#         menu = Menu(date=date)
+#         # looping through meal items and adding them to menu
+#         if meal_items:
+#             for meal_id in meal_items:
+#                 meal = Meal.get(id=meal_id)
+#                 if not meal:
+#                     return 'Meal {} not found'.format(meal_id), 400
+#                 menu.add_to_menu(meal)
+#             menu.save()
+#             meal_list = [[meal.id, meal.name, meal.price] for meal in menu.meals]
+#             result = jsonify({'id': menu.id, 'date': menu.date, 'meal': meal_list})
+#             result.status_code = 201
+#             return result
+#         return 'Meal list is empty!', 400
    
-    @token_required
-    def get(self, user):
-        date = datetime.utcnow().date()
-        menu = Menu.get(date=date)
-        if not menu:
-            return 'Menu for {} not found'.format(date.ctime())
-        meal_list = [[meal.id, meal.name, meal.price] for meal in menu.meals]
-        result = jsonify({'id': menu.id, 'date': menu.date, 'meal': meal_list})
-        result.status_code = 200
-        return result
+#     @token_required
+#     def get(self, user):
+#         date = datetime.utcnow().date()
+#         menu = Menu.get(date=date)
+#         if not menu:
+#             return 'Menu for {} not found'.format(date.ctime())
+#         meal_list = [[meal.id, meal.name, meal.price] for meal in menu.meals]
+#         result = jsonify({'id': menu.id, 'date': menu.date, 'meal': meal_list})
+#         result.status_code = 200
+#         return result

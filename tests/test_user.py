@@ -53,6 +53,14 @@ class UserTestCase(unittest.TestCase):
         self.assertEqual(result['message'], 'Oops! , wrong password or username.Please try again')
         self.assertEqual(response.status_code, 401)
 
+    def test_cannot_login_if_no_username_or_password(self):
+        """Test API cannot authenticate login when either password or username is missing (POST request)"""
+        response = self.client.post('/api/v1/user/signup', data = json.dumps(self.data), content_type = 'application/json')
+        response = self.client.post('/api/v1/user/login', data=json.dumps({'username': '', 'password': 'wrong_password'}), content_type='application/json')
+        result = json.loads(response.data.decode('utf-8'))
+        self.assertEqual(result['message'], 'All fields required')
+        self.assertEqual(response.status_code, 400)
+
     def test_login_nonexistent_user(self):
         """Test API cannot authenticate login when user is nonexistent (POST request)"""
         response = self.client.post('/api/v1/user/login', data=json.dumps({'username': 'nonexistent', 'password': 'wrong_password'}), content_type='application/json')
