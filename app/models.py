@@ -10,14 +10,12 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 db = app.db
 
-# MENU_MEALS = db.Table(
-#     'menu_meals_assoc'
-#     db.Column('menu_id', db.Integer(), db.ForeignKey('menu.id'))
-#     db.Column('meal_id', db.Integer(), db.ForeignKey('meal.id')))
 
 class Base(db.Model):
+    
     __abstract__ = True
     __table_args__ = {'extend_existing': True}
+    
     def save(self):
         """Save to the database"""
         try:
@@ -26,6 +24,7 @@ class Base(db.Model):
         except Exception as e:
             db.session.rollback()
             return {'message': 'An error occured during save operation', 'error': str(e)}
+    
     def delete(self):
         """Delete from the database"""
         try:
@@ -34,6 +33,7 @@ class Base(db.Model):
         except Exception as e:
             db.session.rollback()
             return {'message': 'An error occured during save operation', 'error': str(e)}    
+    
     def update(self, column, value):
         setattr(self, column, value)
         self.save()
@@ -110,19 +110,7 @@ class Meal(Base):
         """Return a representation of a meal instance."""
         return "<Meal: {}>".format(self.meal_name)
 
-    
-# class Menu(Base):
-
-#     __tablename__ = 'menu'
-
-#     id = db.Column(db.Integer, primary_key=True)
-#     date = db.Column(db.DateTime, default=datetime.utcnow().date())
-    # meals = db.relationship(
-    #     'Meal', secondary='menu_meals_assoc', backref=db.backref('meals', lazy=True, uselist=True))
-
-    # def add_to_menu(self, meal):
-    #     self.meals.append(meal)
-
+ 
 class Order(Base):
 
     __tablename__ = 'order'
