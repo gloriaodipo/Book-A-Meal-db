@@ -10,7 +10,6 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 db = app.db
 
-
 class Base(db.Model):
     
     __abstract__ = True
@@ -46,7 +45,6 @@ class User(Base):
     
     __tablename__ = 'user'
     __table_args__ = {'extend_existing': True}
-
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String, index=True,nullable=False, unique=True)
     email = db.Column(db.String, index=True,nullable=False, unique=True)
@@ -92,7 +90,6 @@ class User(Base):
 class Meal(Base):
 
     __tablename__ = 'meal'
-
     id = db.Column(db.Integer, primary_key=True)
     meal_name = db.Column(db.String, nullable=False)
     price = db.Column(db.Float, nullable=False)
@@ -110,27 +107,25 @@ class Meal(Base):
         """Return a representation of a meal instance."""
         return "<Meal: {}>".format(self.meal_name)
 
- 
-# class Order(Base):
+class Order(Base):
 
-#     __tablename__ = 'order'
+    __tablename__ = 'order'
+    id = db.Column(db.Integer, primary_key=True)
+    customer_name = db.Column(db.String, nullable=False)
+    meals = db.Column(db.String, nullable=False)
+    price = db.Column(db.Float, nullable=False)
 
-#     id = db.Column(db.Integer, primary_key=True)
-#     customer_name = db.Column(db.String, nullable=False)
-#     meals = db.Column(db.String, nullable=False)
-#     price = db.Column(db.Float, nullable=False)
+    @staticmethod
+    def get(**kwargs):
+        """This method gets all the orders for a given user."""
+        return Order.query.filter_by(**kwargs).first()
 
-#     @staticmethod
-#     def get(**kwargs):
-#         """This method gets all the orders for a given user."""
-#         return Order.query.filter_by(**kwargs).first()
+    @staticmethod
+    def get_all():
+        """This method gets all the orders for a given user."""
+        return Order.query.all()
 
-#     @staticmethod
-#     def get_all():
-#         """This method gets all the orders for a given user."""
-#         return Order.query.all()
-
-#     def __repr__(self):
-#         """Return a representation of an order instance."""
-#         return '<Menu Date {}>'.format(self.date.ctime())
+    def __repr__(self):
+        """Return a representation of an order instance."""
+        return '<Menu Date {}>'.format(self.date.ctime())
 
