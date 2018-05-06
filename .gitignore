@@ -9,4 +9,4 @@ migrations/
 calhost
 .coverage
 .pytest_cache/
-app/__pycache__/__init__.cpython-35.pyc
+*/__pycache__/__init__.cpython-35.pyc
