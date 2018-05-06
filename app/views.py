@@ -1,20 +1,21 @@
-from flask import Flask, request, jsonify
-from flask_restful import Api, Resource
+from datetime import datetime
+from flask import request, jsonify
+from flask_restful import Resource
 import json
 
-from .models import User
-from .models import Meal
-from .decorators import token_required
-from .decorators import admin_token_required
+from .models import User, Meal
+from .decorators import token_required, admin_token_required
 
-app = Flask(__name__)
-api = Api(app)
 
 class UserSignupAPI(Resource):
     def post(self):
         user = request.get_json()
         admin = user.get('admin', '')
-        if user.get('username') is None or user.get('email') is None or user.get('password') is None:
+        username = user.get('username', None)
+        email = user.get('email', None)
+        password = user.get('password', None)
+
+        if username is None or len(username)==0  or email is None or len(email)==0 or password is None or len(password)==0:
             result = jsonify({'message': 'All fields required'}) 
             result.status_code = 400
             return result
@@ -28,19 +29,19 @@ class UserSignupAPI(Resource):
         result.status_code = 201
         return result
 
-
 class UserLoginAPI(Resource):
     def post(self):
         user = request.get_json()
         username = user.get('username')
         password = user.get('password')
         user = User.get(username=username)
+        if user == None:
+            return {'message':'Unavailable, please sign up first'}, 404
         if user.password_is_valid(password):
             token = user.generate_token()
-            return {'message':'Ssup, you are in!', 'token':token}, 200
+            return {'message':'Login successful!', 'token':token}, 200
         else:
             return {'message':'Oops! , wrong password or username.Please try again'}, 401
-
 
 class MealsAPI(Resource):
     @admin_token_required
@@ -56,7 +57,15 @@ class MealsAPI(Resource):
         return result
 
     @admin_token_required
-    def get(self, user):
+    def get(self, user, meal_id=None):
+        if meal_id:
+            meal = Meal.get(id=meal_id)
+            if not isinstance(meal, Meal):
+                return 'Meal not found', 404
+            meal_dict = {'meal_name': meal.meal_name, 'price':meal.price, 'category':meal.category}
+            result = jsonify(meal_dict)
+            result.status_code = 200
+            return result
         meals = Meal.get_all()
         result = {}
         for meal in meals:
@@ -66,11 +75,61 @@ class MealsAPI(Resource):
         result.status_code = 200
         return result
 
+    @admin_token_required
+    def delete(self, user, meal_id):
+        meal = Meal.get(id=meal_id)
+        if not meal:
+            return {'message': 'Meal not found'}, 404
+        meal.delete()
+        return {'message': 'Meal {} deleted'.format(meal_id)}
 
+    @admin_token_required
+    def put(self, user, meal_id):
+        new_data = request.get_json()['new_data']
+        meal = Meal.get(id=meal_id)
+        for key in new_data:
+            meal.update(key, new_data[key])
+        result = jsonify({'new_meal':{'meal_name': meal.meal_name, 'price': meal.price, 'category': meal.category}, 'message': 'Updated successfully'})
+        result.status_code = 200
+        return result
 
-api.add_resource(UserSignupAPI, '/api/v1/user/signup')
-api.add_resource(MealsAPI, '/api/v1/meals')
-api.add_resource(UserLoginAPI, '/api/v1/user/login')
+class MenuAPI(Resource):
+    @admin_token_required
+    def post(self, user):
+        post_data = request.get_json()
+        meal_items = post_data.get('meal_items', '')
+        date = post_data.get('date', '')
+        if date:
+            
+            try:
+                year, month, day = date.split('-')
+                date = datetime(year=int(year), month=int(month), day=int(day))
+            except:
+                return 'Ensure date is of the form YYYY-MM-DD', 400
 
-if __name__ == '__main__':
-    app.run(debug=True)
+        # create a menu object
+        menu = Menu(date=date)
+        # looping through meal items and adding them to menu
+        if meal_items:
+            for meal_id in meal_items:
+                meal = Meal.get(id=meal_id)
+                if not meal:
+                    return 'Meal {} not found'.format(meal_id), 400
+                menu.add_to_menu(meal)
+            menu.save()
+            meal_list = [[meal.id, meal.name, meal.price] for meal in menu.meals]
+            result = jsonify({'id': menu.id, 'date': menu.date, 'meal': meal_list})
+            result.status_code = 201
+            return result
+        return 'Meal list is empty!', 400
+   
+    @token_required
+    def get(self, user):
+        date = datetime.utcnow().date()
+        menu = Menu.get(date=date)
+        if not menu:
+            return 'Menu for {} not found'.format(date.ctime())
+        meal_list = [[meal.id, meal.name, meal.price] for meal in menu.meals]
+        result = jsonify({'id': menu.id, 'date': menu.date, 'meal': meal_list})
+        result.status_code = 200
+        return result

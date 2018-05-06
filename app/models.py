@@ -10,31 +10,50 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 db = app.db
 
+# MENU_MEALS = db.Table(
+#     'menu_meals_assoc'
+#     db.Column('menu_id', db.Integer(), db.ForeignKey('menu.id'))
+#     db.Column('meal_id', db.Integer(), db.ForeignKey('meal.id')))
 
 class Base(db.Model):
     __abstract__ = True
     __table_args__ = {'extend_existing': True}
     def save(self):
         """Save to the database"""
-        db.session.add(self)
-        db.session.commit()
-
+        try:
+            db.session.add(self)
+            db.session.commit()
+        except Exception as e:
+            db.session.rollback()
+            return {'message': 'An error occured during save operation', 'error': str(e)}
     def delete(self):
         """Delete from the database"""
-        db.session.delete(self)
-        db.session.commit()
+        try:
+            db.session.delete(self)
+            db.session.commit()
+        except Exception as e:
+            db.session.rollback()
+            return {'message': 'An error occured during save operation', 'error': str(e)}    
+    def update(self, column, value):
+        setattr(self, column, value)
+        self.save()
+    
+    @classmethod
+    def get(cls,**kwargs):
+        return cls.query.filter_by(**kwargs).first()
 
 class User(Base):
     
     __tablename__ = 'user'
     __table_args__ = {'extend_existing': True}
+
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String, index=True,nullable=False, unique=True)
     email = db.Column(db.String, index=True,nullable=False, unique=True)
     password = db.Column(db.String, nullable=False)
     admin = db.Column(db.Boolean, default=False)
     
-    def __init__(self,username, email, password ):
+    def __init__(self, username, email, password):
         self.password = generate_password_hash(password)
         self.username = username
         self.email = email
@@ -83,17 +102,26 @@ class Meal(Base):
     def get_all():
         return Meal.query.all()
 
+    @staticmethod
+    def get(**kwargs):
+        return Meal.query.filter_by(**kwargs).first()
+
     def __repr__(self):
         """Return a representation of a meal instance."""
-        return "<Meal: {}>".format(self.meal)
+        return "<Meal: {}>".format(self.meal_name)
 
     
-class Menu(Base):
+# class Menu(Base):
 
-    __tablename__ = 'menu'
+#     __tablename__ = 'menu'
 
-    id = db.Column(db.Integer, primary_key=True)
-    meals = db.Column(db.String, nullable=False)
+#     id = db.Column(db.Integer, primary_key=True)
+#     date = db.Column(db.DateTime, default=datetime.utcnow().date())
+    # meals = db.relationship(
+    #     'Meal', secondary='menu_meals_assoc', backref=db.backref('meals', lazy=True, uselist=True))
+
+    # def add_to_menu(self, meal):
+    #     self.meals.append(meal)
 
 class Order(Base):
 
@@ -117,3 +145,4 @@ class Order(Base):
     def __repr__(self):
         """Return a representation of an order instance."""
         return '<Menu Date {}>'.format(self.date.ctime())
+

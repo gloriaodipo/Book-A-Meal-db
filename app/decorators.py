@@ -8,9 +8,9 @@ def token_required(func):
     def decorated(*args, **kwargs):
         access_token = None
         try:
-            auth_header = request.headers.get('Authorization')
-            if auth_header:
-                access_token = auth_header.split(' ')[1]
+            authorization_header = request.headers.get('Authorization')
+            if authorization_header:
+                access_token = authorization_header.split(' ')[1]
             if access_token:
                 username = User.decode_token(access_token)
                 user = User.query.filter_by(username=username).first()
@@ -20,16 +20,15 @@ def token_required(func):
             return {'message': 'An error occured', 'error':str(e)},400
     return decorated
 
-
 def admin_token_required(func):
     '''check users have valid tokens and have admin property'''
     @wraps(func)
     def decorated(*args, **kwargs):
         access_token = None
         try:
-            auth_header = request.headers.get('Authorization')
-            if auth_header:
-                access_token = auth_header.split(' ')[1]
+            authorization_header = request.headers.get('Authorization')
+            if authorization_header:
+                access_token = authorization_header.split(' ')[1]
             if access_token:
                 username = User.decode_token(access_token)
 
