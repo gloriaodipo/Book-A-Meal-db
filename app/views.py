@@ -15,12 +15,12 @@ class UserSignupAPI(Resource):
         email = user.get('email', None)
         password = user.get('password', None)
 
-        users = user.query.all()
-        for user in users:
-            if user.username == user.username:
-                result = jsonify({'message': 'User already exists'}) 
-                result.status_code = 202
-                return result
+        # users = User.query.all()
+        # for user in users:
+        #     if user.username == username:
+        #         result = jsonify({'message': 'User already exists'}) 
+        #         result.status_code = 202
+        #         return result
 
         if username is None or len(username)==0  or email is None or len(email)==0 or password is None or len(password)==0:
             result = jsonify({'message': 'All fields required'}) 
