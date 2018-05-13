@@ -1,5 +1,6 @@
 # Book-A-Meal-db
 
+[![Build Status](https://travis-ci.org/gloriaodipo/Book-A-Meal-db.svg?branch=APIKY)](https://travis-ci.org/gloriaodipo/Book-A-Meal-db)
 
 Book-A-Meal is an application that allows customers to make food orders and helps the food vendor know what the customers want to eat.
 ## Features
