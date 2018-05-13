@@ -2,7 +2,7 @@ import sys
 import os
 import unittest
 import json
-from . import app, db
+from . import create_app, db
 
    
 class MealsTestCase(unittest.TestCase):
@@ -10,12 +10,13 @@ class MealsTestCase(unittest.TestCase):
 
     def setUp(self):
         """Initialize app and define test variables"""
-        db.drop_all()
-        db.create_all()
-        self.app = app
+        
+        self.app = create_app('testing')
         self.client = self.app.test_client()
         self.app_context = self.app.app_context()
         self.app_context.push()
+        db.drop_all()
+        db.create_all()
         self.data = {
                     "meal_name": "rice beef", 
                     "price": 500,
@@ -143,6 +144,4 @@ class MealsTestCase(unittest.TestCase):
 
     def tearDown(self):
         db.drop_all()
-
-if __name__ == '__main__':
-    unittest.main()
+        self.app_context.pop()

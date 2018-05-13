@@ -3,9 +3,10 @@
 __pycache__/
 /__pycache__/
 */__pycache__/*
-venv/
+gloenv/
 *.pyc
 migrations/
 calhost
 .coverage
 .pytest_cache/
+env.bat

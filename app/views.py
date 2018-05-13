@@ -15,26 +15,15 @@ class UserSignupAPI(Resource):
         email = user.get('email', None)
         password = user.get('password', None)
 
-        # users = User.query.all()
-        # for user in users:
-        #     if user.username == username:
-        #         result = jsonify({'message': 'User already exists'}) 
-        #         result.status_code = 202
-        #         return result
-
         if username is None or len(username)==0  or email is None or len(email)==0 or password is None or len(password)==0:
-            result = jsonify({'message': 'All fields required'}) 
-            result.status_code = 400
-            return result
+            return {'message': 'All fields required'}, 400
     
         new_user = User(username=user.get('username'), email=user.get('email'), password=user.get('password'))
         if admin == True:
             new_user.make_user_admin()
         new_user.save()
 
-        result = jsonify({'message': 'Successfully registered'})
-        result.status_code = 201
-        return result
+        return {'message': 'Successfully registered'}, 201
 
 class UserLoginAPI(Resource):
     def post(self):
@@ -44,9 +33,7 @@ class UserLoginAPI(Resource):
         user = User.get(username=username)
 
         if username is None or len(username)==0 or password is None or len(password)==0:
-            result = jsonify({'message': 'All fields required'}) 
-            result.status_code = 400
-            return result
+            return {'message': 'All fields required'}, 400
         if user == None:
             return {'message':'Unavailable, please sign up first'}, 404
         if user.password_is_valid(password):
@@ -64,9 +51,7 @@ class MealsAPI(Resource):
 
         new_meal.save()
 
-        result = jsonify({"message": "meal added"})
-        result.status_code = 201
-        return result
+        return {"message": "meal added"}, 201
 
     @admin_token_required
     def get(self, user, meal_id=None):
@@ -74,18 +59,13 @@ class MealsAPI(Resource):
             meal = Meal.get(id=meal_id)
             if not isinstance(meal, Meal):
                 return 'Meal not found', 404
-            meal_dict = {'meal_name': meal.meal_name, 'price':meal.price, 'category':meal.category}
-            result = jsonify(meal_dict)
-            result.status_code = 200
-            return result
+            return {'meal_name': meal.meal_name, 'price':meal.price, 'category':meal.category}, 200
         meals = Meal.get_all()
         result = {}
         for meal in meals:
             meal_dict = {'meal_name': meal.meal_name, 'price':meal.price, 'category':meal.category}
             result.update({str(meal.id): meal_dict})
-        result = jsonify(result)
-        result.status_code = 200
-        return result
+        return result, 200
 
     @admin_token_required
     def delete(self, user, meal_id):
@@ -101,6 +81,9 @@ class MealsAPI(Resource):
         meal = Meal.get(id=meal_id)
         for key in new_data:
             meal.update(key, new_data[key])
-        result = jsonify({'new_meal':{'meal_name': meal.meal_name, 'price': meal.price, 'category': meal.category}, 'message': 'Updated successfully'})
-        result.status_code = 200
-        return result
+        return {
+            'new_meal':{
+                'meal_name': meal.meal_name,
+                'price': meal.price,
+                'category': meal.category},
+                'message': 'Updated successfully'}, 200

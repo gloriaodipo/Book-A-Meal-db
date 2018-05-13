@@ -2,20 +2,20 @@ import sys
 import os
 import unittest
 import json
-from . import app, db
+from . import create_app, db
 
 class UserTestCase(unittest.TestCase):
     """This class represents the user login and signup test case."""
 
     def setUp(self):
         """Initialize app and define test variables"""
-        self.app = app
-        db.drop_all()
-        db.create_all()
-        self.app.config
+        self.app = create_app('testing')
         self.client = self.app.test_client()
         self.app_context = self.app.app_context()
         self.app_context.push()
+        db.drop_all()
+        db.create_all()
+        
         self.data = {
                     "username":"carenakinyi", 
                     "email":"carenakinyi@gmail.com",
@@ -25,7 +25,6 @@ class UserTestCase(unittest.TestCase):
     def test_signup(self):
         """Test API can successfully register a new user (POST request)"""
         response = self.client.post('/api/v1/user/signup', data = json.dumps(self.data), content_type = 'application/json')
-        print (response.data)
         result = json.loads(response.data.decode('utf-8'))
         self.assertEqual(result["message"], "Successfully registered")
         self.assertEqual(response.status_code, 201)
@@ -69,7 +68,7 @@ class UserTestCase(unittest.TestCase):
         self.assertEqual(response.status_code, 404) 
 
     def tearDown(self):
+        db.session.remove()
         db.drop_all()
+        self.app_context.pop()
 
-if __name__ == '__main__':
-    unittest.main()    

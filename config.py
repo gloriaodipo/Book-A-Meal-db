@@ -14,7 +14,7 @@ class DevelopmentConfig(Config):
 class TestingConfig(Config):
     """Configurations for Testing, with a separate test database."""
     TESTING = True
-    SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL_TEST')
+    SQLALCHEMY_DATABASE_URI = os.getenv('DATABASE_URL_TEST')
     DEBUG = True
 
 class StagingConfig(Config):
