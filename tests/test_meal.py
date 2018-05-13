@@ -10,13 +10,13 @@ class MealsTestCase(unittest.TestCase):
 
     def setUp(self):
         """Initialize app and define test variables"""
-        
         self.app = create_app('testing')
         self.client = self.app.test_client()
         self.app_context = self.app.app_context()
         self.app_context.push()
         db.drop_all()
         db.create_all()
+        
         self.data = {
                     "meal_name": "rice beef", 
                     "price": 500,
@@ -143,5 +143,6 @@ class MealsTestCase(unittest.TestCase):
         self.assertEqual(response.status_code, 401)
 
     def tearDown(self):
+        db.session.remove()
         db.drop_all()
         self.app_context.pop()
