@@ -79,12 +79,12 @@ class User(Base):
         payload = {'exp': datetime.utcnow()+timedelta(minutes=60),
                     'iat': datetime.utcnow(),
                     'username': self.username}
-        token = jwt.encode(payload, current_app.config.get('SECRET'), algorithm='HS256')
+        token = jwt.encode(payload, str(current_app.config.get('SECRET')), algorithm='HS256')
         return token.decode()
     
     @staticmethod
     def decode_token(token):
-        payload = jwt.decode(token, current_app.config.get('SECRET'), algorithms=['HS256'])
+        payload = jwt.decode(token, str(current_app.config.get('SECRET')), algorithms=['HS256'])
         return payload['username']
 
 class Meal(Base):
