@@ -1,5 +1,6 @@
 # Book-A-Meal-db
 
+
 [![Build Status](https://travis-ci.org/gloriaodipo/Book-A-Meal-db.svg?branch=APIKY)](https://travis-ci.org/gloriaodipo/Book-A-Meal-db) [![Coverage Status](https://coveralls.io/repos/github/gloriaodipo/Book-A-Meal-db/badge.svg?branch=APIKY)](https://coveralls.io/github/gloriaodipo/Book-A-Meal-db?branch=APIKY)
 
 Book-A-Meal is an application that allows customers to make food orders and helps the food vendor know what the customers want to eat.
@@ -73,3 +74,6 @@ flask run
 Then run tests
 
 pytest tests
+
+[![Build Status](https://travis-ci.org/gloriaodipo/Book-A-Meal-db.svg?branch=master)](https://travis-ci.org/gloriaodipo/Book-A-Meal-db) [![Coverage Status](https://coveralls.io/repos/github/gloriaodipo/Book-A-Meal-db/badge.svg?branch=master)](https://coveralls.io/github/gloriaodipo/Book-A-Meal-db?branch=master)
+
