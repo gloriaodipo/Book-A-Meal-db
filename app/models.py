@@ -31,7 +31,7 @@ class Base(db.Model):
             db.session.commit()
         except Exception as e:
             db.session.rollback()
-            return {'message': 'An error occured during save operation', 'error': str(e)}    
+            return {'message': 'An error occured during delete operation', 'error': str(e)}    
     
     def update(self, column, value):
         setattr(self, column, value)

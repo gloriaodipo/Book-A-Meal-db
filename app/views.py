@@ -15,6 +15,11 @@ class UserSignupAPI(Resource):
         email = user.get('email', None)
         password = user.get('password', None)
 
+        users = User.get_all()
+        for user in users:
+            if username == user.username:
+                return {'message': 'User already exists'}, 202
+
         if username is None or len(username)==0  or email is None or len(email)==0 or password is None or len(password)==0:
             return {'message': 'All fields required'}, 400
     
