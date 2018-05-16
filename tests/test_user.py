@@ -41,7 +41,7 @@ class UserTestCase(unittest.TestCase):
         response = self.client.post('/api/v1/user/signup', data = json.dumps(self.data), content_type = 'application/json')
         response = self.client.post('/api/v1/user/signup', data = json.dumps(self.data), content_type = 'application/json')   
         result = json.loads(response.data.decode('utf-8'))
-        self.assertEqual(result["message"], "User already exists")
+        self.assertEqual(result['message'], 'User already exists')
         self.assertEqual(response.status_code, 202)
 
     def test_login(self):

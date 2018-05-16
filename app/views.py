@@ -63,7 +63,7 @@ class MealsAPI(Resource):
         if meal_id:
             meal = Meal.get(id=meal_id)
             if not isinstance(meal, Meal):
-                return 'Meal not found', 404
+                return {'message': 'Meal not found'}, 404
             return {'meal_name': meal.meal_name, 'price':meal.price, 'category':meal.category}, 200
         meals = Meal.get_all()
         result = {}

@@ -59,6 +59,32 @@ class MealsTestCase(unittest.TestCase):
         response = self.client.get('/api/v1/meals',headers=headers, data = json.dumps(self.data) , content_type = 'application/json')
         self.assertEqual(response.status_code, 200) 
 
+    def test_can_get_single_meal(self):
+        """Test API can get single meal (GET request)"""
+        response = self.client.post('/api/v1/user/signup', data = json.dumps(self.admin), content_type = 'application/json')
+        response = self.client.post('/api/v1/user/login', data=json.dumps({'username': 'cindy', 'email': 'cindy@gmail.com', 'password': 'admin'}), content_type='application/json')
+        
+        token = json.loads(response.data.decode('utf-8'))['token']
+        headers = {'Authorization': 'Bearer {}'.format(token)}
+
+        response = self.client.post('/api/v1/meals',headers=headers, data = json.dumps(self.data) , content_type = 'application/json')
+        response = self.client.get('/api/v1/meals/1',headers=headers, data = json.dumps(self.data) , content_type = 'application/json')
+        self.assertEqual(response.status_code, 200)
+
+    def test_cannot_get_invalid_meal(self):
+        """Test API cannot get invalid meal (GET request)"""
+        response = self.client.post('/api/v1/user/signup', data = json.dumps(self.admin), content_type = 'application/json')
+        response = self.client.post('/api/v1/user/login', data=json.dumps({'username': 'cindy', 'email': 'cindy@gmail.com', 'password': 'admin'}), content_type='application/json')
+        
+        token = json.loads(response.data.decode('utf-8'))['token']
+        headers = {'Authorization': 'Bearer {}'.format(token)}
+
+        response = self.client.post('/api/v1/meals',headers=headers, data = json.dumps(self.data) , content_type = 'application/json')
+        response = self.client.get('/api/v1/meals/10',headers=headers, data = json.dumps(self.data) , content_type = 'application/json')
+        result = json.loads(response.data.decode('utf-8'))
+        self.assertEqual(result["message"], "Meal not found")
+        self.assertEqual(response.status_code, 404)
+
     def test_update_meal(self):
         """Test API can modify/update details of a given meal using meal_id (PUT request)"""
         response = self.client.post('/api/v1/user/signup', data = json.dumps(self.admin), content_type = 'application/json')
