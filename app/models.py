@@ -112,8 +112,8 @@ class Order(Base):
     __tablename__ = 'order'
     id = db.Column(db.Integer, primary_key=True)
     customer_name = db.Column(db.String, nullable=False)
-    meals = db.Column(db.String, nullable=False)
-    price = db.Column(db.Float, nullable=False)
+    meal_name = db.Column(db.String, nullable=False)
+    quantity = db.Column(db.Integer, nullable=False)
 
     @staticmethod
     def get(**kwargs):

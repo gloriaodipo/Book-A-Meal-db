@@ -3,7 +3,7 @@ from flask import request, jsonify
 from flask_restful import Resource
 import json
 
-from .models import User, Meal
+from .models import User, Meal, Order
 from .decorators import token_required, admin_token_required
 
 
@@ -92,3 +92,40 @@ class MealsAPI(Resource):
                 'price': meal.price,
                 'category': meal.category},
                 'message': 'Updated successfully'}, 200
+
+class OrdersAPI(Resource):
+    @token_required
+    def post(self, user):
+        order = request.get_json()
+        new_order = Order(customer_name=order.get('customer_name'), meal_name=order.get('meal_name'),
+        quantity=order.get('quantity'))
+
+        new_order.save()
+        return {'message': 'Order has been sent'}, 201
+
+    @admin_token_required
+    def get(self, user, order_id=None):
+        if order_id:
+            order = Order.get(id=order_id)
+            if not isinstance(order, Order):
+                return {'message': 'Order not found'}, 404
+            return {'customer_name': order.customer_name, 'meal_name':order.meal_name, 'quantity':order.quantity}, 200
+        orders = Order.get_all()
+        result = {}
+        for order in orders:
+            order_dict = {'customer_name': order.customer_name, 'meal_name':order.meal_name, 'quantity':order.quantity}
+            result.update({str(order.id): order_dict})
+        return result, 200
+
+    # @token_required
+    # def put(self, user, order_id):
+    #     new_data = request.get_json()['new_data']
+    #     order = Order.get(order_id)
+    #     for key in new_data:
+    #         order.update(key, new_data[key])
+    #     return {
+    #         'new_order':{
+    #             'customer_name': order.customer_name,
+    #             'meal_name': order.meal_name,
+    #             'quantity': order.quantity},
+    #             'message': 'Updated successfully'}, 200    
