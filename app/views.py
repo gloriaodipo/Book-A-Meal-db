@@ -117,15 +117,15 @@ class OrdersAPI(Resource):
             result.update({str(order.id): order_dict})
         return result, 200
 
-    # @token_required
-    # def put(self, user, order_id):
-    #     new_data = request.get_json()['new_data']
-    #     order = Order.get(order_id)
-    #     for key in new_data:
-    #         order.update(key, new_data[key])
-    #     return {
-    #         'new_order':{
-    #             'customer_name': order.customer_name,
-    #             'meal_name': order.meal_name,
-    #             'quantity': order.quantity},
-    #             'message': 'Updated successfully'}, 200    
+    @token_required
+    def put(self, user, order_id):
+        new_data = request.get_json()['new_data']
+        order = Order.get(id=order_id)
+        for key in new_data:
+            order.update(key, new_data[key])
+        return {
+            'new_order':{
+                'customer_name': order.customer_name,
+                'meal_name': order.meal_name,
+                'quantity': order.quantity},
+                'message': 'Updated successfully'}, 200    
