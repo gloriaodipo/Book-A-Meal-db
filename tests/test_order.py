@@ -84,20 +84,20 @@ class OrdersTestCase(unittest.TestCase):
         self.assertEqual(result["message"], "Order not found")
         self.assertEqual(response.status_code, 404)
 
-    # def test_update_order(self):
-    #     """Test API can modify/update details of a given order(PUT request)"""
-    #     response = self.client.post('/api/v1/user/signup', data = json.dumps(self.user), content_type = 'application/json')
-    #     response = self.client.post('/api/v1/user/login', data=json.dumps({'username': 'chris', 'email': 'chris@gmail.com', 'password': 'passw'}), content_type='application/json')
+    def test_update_order(self):
+        """Test API can modify/update details of a given order(PUT request)"""
+        response = self.client.post('/api/v1/user/signup', data = json.dumps(self.user), content_type = 'application/json')
+        response = self.client.post('/api/v1/user/login', data=json.dumps({'username': 'chris', 'email': 'chris@gmail.com', 'password': 'passw'}), content_type='application/json')
         
-    #     token = json.loads(response.data.decode('utf-8'))['token']
-    #     headers = {'Authorization': 'Bearer {}'.format(token)}
+        token = json.loads(response.data.decode('utf-8'))['token']
+        headers = {'Authorization': 'Bearer {}'.format(token)}
         
-    #     response = self.client.post('/api/v1/orders',headers = headers, data = json.dumps(self.data) , content_type = 'application/json')
-    #     data = {'new_data':{'quantity':5}}
-    #     response = self.client.put('/api/v1/orders/1',headers=headers, data = json.dumps(data) , content_type = 'application/json')
-    #     result = json.loads(response.data.decode('utf-8'))
-    #     self.assertEqual(result["message"], "Updated successfully")
-    #     self.assertEqual(response.status_code, 200) 
+        response = self.client.post('/api/v1/orders',headers = headers, data = json.dumps(self.data) , content_type = 'application/json')
+        data = {'new_data':{'quantity':5}}
+        response = self.client.put('/api/v1/orders/1',headers=headers, data = json.dumps(data) , content_type = 'application/json')
+        result = json.loads(response.data.decode('utf-8'))
+        self.assertEqual(result["message"], "Updated successfully")
+        self.assertEqual(response.status_code, 200) 
 
     def tearDown(self):
         db.session.remove()
