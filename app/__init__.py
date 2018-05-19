@@ -20,10 +20,11 @@ def create_app(config_name):
     from .views import UserLoginAPI
     from .views import MealsAPI
     from .views import OrdersAPI
+    from .views import MenuAPI
 
     api.add_resource(UserSignupAPI, '/api/v1/user/signup')
     api.add_resource(MealsAPI, '/api/v1/meals', '/api/v1/meals/<meal_id>')
     api.add_resource(UserLoginAPI, '/api/v1/user/login')
     api.add_resource(OrdersAPI, '/api/v1/orders', '/api/v1/orders/<order_id>') 
-
+    api.add_resource(MenuAPI, '/api/v1/menu')
     return app

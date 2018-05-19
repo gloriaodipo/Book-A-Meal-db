@@ -127,5 +127,21 @@ class Order(Base):
 
     def __repr__(self):
         """Return a representation of an order instance."""
-        return '<Menu Date {}>'.format(self.date.ctime())
+        return '<Order Date {}>'.format(self.date.ctime())
 
+class Menu(Base):
+
+    __tablename__ = 'menu'
+    id = db.Column(db.Integer, primary_key=True)
+    meal_name = db.Column(db.String, nullable=False)
+    price = db.Column(db.Integer, nullable=False)
+    category = db.Column(db.String, nullable=False)
+
+    @staticmethod
+    def get_all():
+        """This method gets all the menu items."""
+        return Menu.query.all()
+
+    def __repr__(self):
+        """Return a representation of a menu instance."""
+        return '<Menu Date {}>'.format(self.date.ctime())

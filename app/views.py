@@ -3,7 +3,7 @@ from flask import request, jsonify
 from flask_restful import Resource
 import json
 
-from .models import User, Meal, Order
+from .models import User, Meal, Order, Menu 
 from .decorators import token_required, admin_token_required
 
 
@@ -129,3 +129,15 @@ class OrdersAPI(Resource):
                 'meal_name': order.meal_name,
                 'quantity': order.quantity},
                 'message': 'Updated successfully'}, 200    
+
+class MenuAPI(Resource):
+    @admin_token_required
+    def post(self, user):
+        if user.admin:
+            menu = request.get_json()
+            new_menu = Menu(meal_name=menu.get('meal_name'), price=menu.get('price'),
+            category=menu.get('category'))
+
+            new_menu.save()
+            return {'message': 'menu created'}, 201
+    
