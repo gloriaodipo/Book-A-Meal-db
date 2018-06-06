@@ -1,6 +1,6 @@
 # Book-A-Meal-db
 
-[![Build Status](https://travis-ci.org/gloriaodipo/Book-A-Meal-db.svg?branch=API)](https://travis-ci.org/gloriaodipo/Book-A-Meal-db) [![Coverage Status](https://coveralls.io/repos/github/gloriaodipo/Book-A-Meal-db/badge.svg?branch=API)](https://coveralls.io/github/gloriaodipo/Book-A-Meal-db?branch=API)
+[![Build Status](https://travis-ci.org/gloriaodipo/Book-A-Meal-db.svg?branch=develop)](https://travis-ci.org/gloriaodipo/Book-A-Meal-db) [![Coverage Status](https://coveralls.io/repos/github/gloriaodipo/Book-A-Meal-db/badge.svg?branch=develop)](https://coveralls.io/github/gloriaodipo/Book-A-Meal-db?branch=develop)
 
 Book-A-Meal is an application that allows customers to make food orders and helps the food vendor know what the customers want to eat.
 ## Features
